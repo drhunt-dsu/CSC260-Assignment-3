@@ -1,17 +1,16 @@
 ﻿//Dan Hunt
 //daniel.hunt@trojans.dsu.edu
-//CSC260 Assignment 3
+//CSC260 Assignment 3 - Properties & Fields
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
-using System.Text;
 
 namespace Dan_Hunt_CSC260_Assignment_3_Properties
 {
     class Student
     {
+        public static string AccessError = "You do not have access to view this property";
+
         #region private backing fields
         private readonly int _id;
         private string _name;
@@ -23,6 +22,13 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
         private string _country;
         private string _email;
         private string _phone;
+        //Bool hasViewAccess is for this condition of the assignment:
+        /*
+         * Historically, systems like WebAdvisor and Banner have allowed students to restrict the viewing of their personal information.
+            Implement this system here, by ensuring the getters of properties check for this value before returning student information. 
+            Student ID and Name are exempt from needing to be checked.
+         */
+        private bool _hasViewAccess;
         #endregion
 
         #region Properties
@@ -40,7 +46,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
 
         public string Major
         {
-            get => _major;
+            get => _hasViewAccess ? _major : AccessError;
             set
             {
                 _major = value;
@@ -50,7 +56,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
 
         public DateTime? StartDate
         {
-            get => _startDate;
+            get => _hasViewAccess ? _startDate : null;
             set
             {
                 //We don't want to have a graduation date before the start date
@@ -68,7 +74,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
 
         public DateTime? AnticipatedGraduationDate
         {
-            get => _anticipatedGraduationDate;
+            get => _hasViewAccess ? _anticipatedGraduationDate : null;
             set
             {
                 //We don't want to have a graduation date before the start date
@@ -86,7 +92,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
 
         public string MailingAddress
         {
-            get => _mailingAddress;
+            get => _hasViewAccess ? _mailingAddress : AccessError;
             set
             {
                 _mailingAddress = value;
@@ -96,7 +102,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
 
         public string? StateProvince
         {
-            get => _stateProvince;
+            get => _hasViewAccess ? _stateProvince : AccessError;
             set
             {
                 _stateProvince = value;
@@ -106,7 +112,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
 
         public string Country
         {
-            get => _country;
+            get => _hasViewAccess ? _country : AccessError;
             set
             {
                 _country = value;
@@ -116,7 +122,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
 
         public string Email
         {
-            get => _email;
+            get => _hasViewAccess ? _email : AccessError;
             set
             {
                 _email = value;
@@ -126,7 +132,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
 
         public string Phone
         {
-            get => _phone;
+            get => _hasViewAccess ? _phone : AccessError;
             set
             {
                 try
@@ -142,6 +148,11 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
             }
         }
 
+        public bool HasViewAccess
+        {
+            //Set only, no need to read
+            set { _hasViewAccess = value; }
+        }
         #endregion
 
         #region Constructors
@@ -150,19 +161,20 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
         {
             _id= -1;
             Name = "John Doe";
+            _hasViewAccess = false;
         }
 
-        //parameterized constructor
-        public Student(int id)
+        /// <summary>
+        /// parameterized constructor for creating a student with an ID
+        /// Uses optional value of hasViewAccess which defaults to false
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="hasViewAccess"></param>
+        public Student(int id, bool hasViewAccess = false)
         {
             _id = id;
+            _hasViewAccess = hasViewAccess;
         }
         #endregion
-
-
-        /*Instructions:
-            Historically, systems like WebAdvisor and Banner have allowed students to restrict the viewing of their personal information.
-                Implement this system here, by ensuring the getters of properties check for this value before returning student information. Student ID and Name are exempt from needing to be checked.
-        */
     }
 }

@@ -1,5 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿//Dan Hunt
+//daniel.hunt@trojans.dsu.edu
+//CSC260 Assignment 3 - Properties & Fields
+using System;
 
 namespace Dan_Hunt_CSC260_Assignment_3_Properties
 {
@@ -14,22 +16,25 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
             Console.WriteLine("**** Forced Error Tests ***");
             var invalidStudent = CreateForcedErrorStudent();
             Console.WriteLine("*** Output Student info with permission");
-            OutputAllStudentInfo(korben, true);
-            Console.WriteLine("*** Output Student info without permission");
-            OutputAllStudentInfo(korben, false);
+            korben.HasViewAccess = true;
+            OutputAllInfoForStudent(korben);
+            Console.WriteLine("*** Output Student info without permission ***");
+            korben.HasViewAccess = false;
+            OutputAllInfoForStudent(korben);
         }
 
         private static Student CreateExampleStudent()
         {
-            var student = new Student(1997);
-            student.Name = "Korben Dallas";
-            student.Major = "English and Bad English";
-            student.MailingAddress = "5000 block Apt 281-53, New York";
-            student.StateProvince = "NY";
-            student.Country = "USA";
-            student.Email = "kdallas@ZorgIndustries.com";
-            student.Phone = "555-867-5309";
-
+            var student = new Student(1997)
+            {
+                Name = "Korben Dallas",
+                Major = "English and Bad English",
+                MailingAddress = "5000 block Apt 281-53, New York",
+                StateProvince = "NY",
+                Country = "USA",
+                Email = "kdallas@ZorgIndustries.com",
+                Phone = "555-867-5309"
+            };
 
             return student;
         }
@@ -49,16 +54,16 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
             validationStudent.StartDate = today.AddDays(2);
 
             //Check for phone number validation
-            validationStudent.Phone = "This is not a phone number";
+            validationStudent.Phone = "abc123";
 
             return validationStudent;
         }
 
         /// <summary>
-        /// Outputs all student info
+        /// Outputs all student information that we have permission to view.
         /// </summary>
         /// <param name="student"></param>
-        private static void OutputAllStudentInfo(Student student, bool hasAccess)
+        private static void OutputAllInfoForStudent(Student student)
         {
             //Bool hasAccess is for this condition of the assignment:
             /*
@@ -66,8 +71,18 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properties
                 Implement this system here, by ensuring the getters of properties check for this value before returning student information. 
                 Student ID and Name are exempt from needing to be checked.
              */
-            
-
+            var startDateString = student.StartDate == null ? Student.AccessError : student.StartDate.ToString();
+            var gradDateString = student.StartDate == null ? Student.AccessError : student.StartDate.ToString();
+            Console.WriteLine($"Id: {student.Id}");
+            Console.WriteLine($"Name: {student.Name}");
+            Console.WriteLine($"Major: {student.Major}");
+            Console.WriteLine($"Start Date: {startDateString}");
+            Console.WriteLine($"Anticipated Graduation Date: {gradDateString}");
+            Console.WriteLine($"Mailing Address: {student.MailingAddress}");
+            Console.WriteLine($"State/Province: {student.StateProvince}");
+            Console.WriteLine($"Country: {student.Country}");
+            Console.WriteLine($"Email: {student.Email}");
+            Console.WriteLine($"Phone: {student.Phone}");
         }
     }
 }
