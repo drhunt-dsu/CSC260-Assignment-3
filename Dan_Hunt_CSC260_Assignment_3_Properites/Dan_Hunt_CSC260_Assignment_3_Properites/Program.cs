@@ -7,6 +7,9 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properites
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            var blah = new Student(123);
+
+
         }
     }
 }
