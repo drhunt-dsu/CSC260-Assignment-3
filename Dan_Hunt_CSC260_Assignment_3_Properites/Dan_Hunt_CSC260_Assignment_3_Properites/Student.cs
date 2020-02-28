@@ -5,22 +5,25 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 using System.Text;
 
-namespace Dan_Hunt_CSC260_Assignment_3_Properites
+namespace Dan_Hunt_CSC260_Assignment_3_Properties
 {
     class Student
     {
+        #region private backing fields
         private readonly int _id;
         private string _name;
         private string _major;
-        private DateTime _startDate;
-        private DateTime _anticipatedGraduationDate;
+        private DateTime? _startDate;
+        private DateTime? _anticipatedGraduationDate;
         private string _mailingAddress;
         private string? _stateProvince;
         private string _country;
         private string _email;
-        private PhoneAttribute _phone;
+        private string _phone;
+        #endregion
 
         #region Properties
         public int Id => _id;//Read Only (no setter)
@@ -31,7 +34,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properites
             set
             {
                 _name = value;
-                Console.WriteLine($"Student {Id} _name set to {value}");
+                Console.WriteLine($"Student {Id} _name set to {_name}");
             }
         }
 
@@ -41,27 +44,43 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properites
             set
             {
                 _major = value;
-                Console.WriteLine($"Student {Id} _major set to {value}");
+                Console.WriteLine($"Student {Id} _major set to {_major}");
             }
         }
 
-        public DateTime StartDate
+        public DateTime? StartDate
         {
             get => _startDate;
             set
             {
-                _startDate = value;
-                Console.WriteLine($"Student {Id} _startDate set to {value}");
+                //We don't want to have a graduation date before the start date
+                if (value > _anticipatedGraduationDate)
+                {
+                    Console.WriteLine($"Student {_id} Start Date {value} cannot be after Graduation Date {AnticipatedGraduationDate}");
+                }
+                else
+                {
+                    _startDate = value;
+                    Console.WriteLine($"Student {Id} _startDate set to {_startDate}");
+                }
             }
         }
 
-        public DateTime AnticipatedGraduationDate
+        public DateTime? AnticipatedGraduationDate
         {
             get => _anticipatedGraduationDate;
             set
             {
-                _anticipatedGraduationDate = value;
-                Console.WriteLine($"Student {Id} _anticipatedGraduationDate set to {value}");
+                //We don't want to have a graduation date before the start date
+                if (value < _startDate)
+                {
+                    Console.WriteLine($"Student {_id} Graduation {value} cannot be before date {AnticipatedGraduationDate}");
+                }
+                else
+                {
+                    _anticipatedGraduationDate = value;
+                    Console.WriteLine($"Student {Id} _anticipatedGraduationDate set to {_anticipatedGraduationDate}");
+                }
             }
         }
 
@@ -71,7 +90,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properites
             set
             {
                 _mailingAddress = value;
-                Console.WriteLine($"Student {Id} _mailingAddress set to {value}");
+                Console.WriteLine($"Student {Id} _mailingAddress set to {_mailingAddress}");
             }
         }
 
@@ -81,7 +100,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properites
             set
             {
                 _stateProvince = value;
-                Console.WriteLine($"Student {Id} _stateProvince set to {value}");
+                Console.WriteLine($"Student {Id} _stateProvince set to {_stateProvince}");
             }
         }
 
@@ -91,7 +110,7 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properites
             set
             {
                 _country = value;
-                Console.WriteLine($"Student {Id} _country set to {value}");
+                Console.WriteLine($"Student {Id} _country set to {_country}");
             }
         }
 
@@ -101,22 +120,31 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properites
             set
             {
                 _email = value;
-                Console.WriteLine($"Student {Id} _email set to {value}");
+                Console.WriteLine($"Student {Id} _email set to {_email}");
             } 
         }
 
-        public PhoneAttribute Phone
+        public string Phone
         {
             get => _phone;
             set
             {
-                _phone = value;
-                Console.WriteLine($"Student {Id} _phone set to {value}");
+                try
+                {
+                    new PhoneAttribute().Validate(value, value);
+                    _phone = value;
+                    Console.WriteLine($"Student {Id} _phone set to {_phone}");
+                }
+                catch(ValidationException e)
+                {
+                    Console.WriteLine($"Unable to set phone number of \"{value}\" for student {_id} : {e.Message}");
+                }
             }
         }
 
         #endregion
 
+        #region Constructors
         //default constructor
         public Student()
         {
@@ -129,18 +157,12 @@ namespace Dan_Hunt_CSC260_Assignment_3_Properites
         {
             _id = id;
         }
+        #endregion
+
 
         /*Instructions:
-        1) Log every instance of writing of a private field within a property setter. Before the program exits, output the activity log to the screen. 
-                    Set the value of each property of each student to facilitate testing and operation of this logging functionality.
-    
-        2) Choose at least one property for students, and make sure its setter has logic in it other than the default auto property setter code.
-                Logging is not counted for these requirements. See the WatchDogAbility example from Chapter 3 slides/text.
-                Historically, systems like WebAdvisor and Banner have allowed students to restrict the viewing of their personal information.
+            Historically, systems like WebAdvisor and Banner have allowed students to restrict the viewing of their personal information.
                 Implement this system here, by ensuring the getters of properties check for this value before returning student information. Student ID and Name are exempt from needing to be checked.
         */
-
-
-
     }
 }
